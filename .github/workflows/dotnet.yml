@@ -1,4 +1,4 @@
-name: ASPSelfDeployDemo
+name: .NET Core Deploy to IIS
 
 on:
   push:
@@ -16,16 +16,18 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
-    - name: Restore dependencies
-      run: dotnet restore
     - name: Build with dotnet
-      run: dotnet build ASPSelfDeployDemo/MonSiteASP/MonSiteASP.csproj --configuration Release
+      run: dotnet build --configuration Release .\ASPSelfDeployDemo
+      #run: dotnet build ASPSelfDeployDemo/MonSiteASP/MonSiteASP.csproj --configuration Release
     
     - name: dotnet publish
-      run: dotnet publish -c Release ASPSelfDeployDemo/MonSiteASP/MonSiteASP.csproj -o ${{env.DOTNET_ROOT}}/ASPSelfDeployDemo
+      run: |
+        dotnet publish -c Release -o ASPSelfDeployDemo .\ASPSelfDeployDemo
+      #run: dotnet publish -c Release ASPSelfDeployDemo/MonSiteASP/MonSiteASP.csproj -o ${{env.DOTNET_ROOT}}/ASPSelfDeployDemo
       
     - name: Deploy to IIS
       run: |
         iisreset/stop
-        Copy-Item ${{env.DOTNET_ROOT}}/ASPSelfDeployDemo/* C:\inetpub\wwwroot\ASPSelfDeployDemo -Recurse -Force
+        Copy-Item ./ASPSelfDeployDemo/* C:/inetpub/wwwroot/ASPSelfDeployDemo -Recurse -Force
+        #Copy-Item ${{env.DOTNET_ROOT}}/ASPSelfDeployDemo/* C:\inetpub\wwwroot\ASPSelfDeployDemo -Recurse -Force
         iisreset/start
