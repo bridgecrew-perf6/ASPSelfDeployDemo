@@ -16,10 +16,10 @@ jobs:
         dotnet-version: '6.0.x'
       
     - name: Build with dotnet
-      run: dotnet build --configuration Release C:\actions-runner\_work\ASPSelfDeployDemo\ASPSelfDeployDemo\MonSiteASP.csproj
+      run: dotnet build -c Release C:\actions-runner\_work\ASPSelfDeployDemo\ASPSelfDeployDemo\ASPSelfDeployDemo\MonSiteASP.csproj
     
     - name: dotnet publish
-      run: dotnet publish -c Release C:\actions-runner\_work\ASPSelfDeployDemo\ASPSelfDeployDemo\MonSiteASP.csproj -o ${{env.DOTNET_ROOT}}\ASPSelfDeployDemo
+      run: dotnet publish -c Release C:\actions-runner\_work\ASPSelfDeployDemo\ASPSelfDeployDemo\ASPSelfDeployDemo\MonSiteASP.csproj -o ${{env.DOTNET_ROOT}}\ASPSelfDeployDemo
       
     - name: Deploy to IIS
       run: |
