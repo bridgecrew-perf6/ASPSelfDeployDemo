@@ -2,9 +2,7 @@ name: .NET Core Deploy to IIS
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build-and-deploy:
@@ -16,18 +14,18 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
+      
     - name: Build with dotnet
-      run: dotnet build --configuration Release .\ASPSelfDeployDemo
-      #run: dotnet build ASPSelfDeployDemo/MonSiteASP/MonSiteASP.csproj --configuration Release
+      run: dotnet build -c Release C:\actions-runner\_work\ASPSelfDeployDemo\ASPSelfDeployDemo\MonSiteASP\MonSiteASP.csproj
     
     - name: dotnet publish
-      run: |
-        dotnet publish -c Release -o ASPSelfDeployDemo .\ASPSelfDeployDemo
-      #run: dotnet publish -c Release ASPSelfDeployDemo/MonSiteASP/MonSiteASP.csproj -o ${{env.DOTNET_ROOT}}/ASPSelfDeployDemo
+      run: dotnet publish -c Release C:\actions-runner\_work\ASPSelfDeployDemo\ASPSelfDeployDemo\MonSiteASP\MonSiteASP.csproj -o ${{env.DOTNET_ROOT}}\ASPSelfDeployDemo
       
     - name: Deploy to IIS
       run: |
-        iisreset/stop
-        Copy-Item ./ASPSelfDeployDemo/* C:/inetpub/wwwroot/ASPSelfDeployDemo -Recurse -Force
-        #Copy-Item ${{env.DOTNET_ROOT}}/ASPSelfDeployDemo/* C:\inetpub\wwwroot\ASPSelfDeployDemo -Recurse -Force
-        iisreset/start
+        iisreset /stop
+        Copy-Item ${{env.DOTNET_ROOT}}\ASPSelfDeployDemo\* C:\inetpub\wwwroot\asp-self-deploy-demo -Recurse -Force
+        iisreset /start
+
+    #- name: Curl the website as adopte un dev
+      #run: curl http://localhost:8080
