@@ -27,5 +27,5 @@ jobs:
         Copy-Item ${{env.DOTNET_ROOT}}\ASPSelfDeployDemo\* C:\inetpub\wwwroot\asp-self-deploy-demo -Recurse -Force
         iisreset /start
 
-    - name: Curl the website as adopte un dev
-      run: curl http://localhost:8080
+    #- name: Curl the website as adopte un dev
+      #run: curl http://localhost:8080
