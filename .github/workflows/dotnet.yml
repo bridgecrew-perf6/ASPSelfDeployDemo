@@ -28,4 +28,4 @@ jobs:
         iisreset /start
 
     - name: Curl the website as adopte un dev
-      run: curl http://localhost/asp-self-deploy-demo
+      run: curl http://localhost:8080
