@@ -6,30 +6,32 @@ namespace MonSiteASP.Controllers
 {
     public class CountryController : Controller
     {
-        // GET: CountryController
-        public ActionResult Index()
+        public List<Country> Pays { get; set; } = new List<Country>()
         {
-            List<CountryModel> pays = new List<CountryModel>()
-            {
-                new ("Belgique", "Bruxelles"),
-                new ("France", "Paris"),
-                new ("Allemagne", "Berlin"),
-                new ("Pays Bas", "Amsterdam"),
-                new ("Russie", "Moscou"),
-                new ("Japon", "Tokyo"),
-                new ("Chine", "Pékin"),
-                new ("Espagne", "Madrid"),
-                new ("Portugal", "Barcelone"),
-                new ("Italie", "Rome"),
-                new ("Angleterre", "Londre"),
-            };
-            return View(pays);
+            new ("Belgique", "Bruxelles"),
+            new ("France", "Paris"),
+            new ("Allemagne", "Berlin"),
+            new ("Pays Bas", "Amsterdam"),
+            new ("Russie", "Moscou"),
+            new ("Japon", "Tokyo"),
+            new ("Chine", "Pékin"),
+            new ("Espagne", "Madrid"),
+            new ("Portugal", "Barcelone"),
+            new ("Italie", "Rome"),
+            new ("Angleterre", "Londre"),
+        };
+
+    // GET: CountryController
+    public ActionResult Index()
+        {
+            return View(Pays);
         }
 
         // GET: CountryController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(string pays)
         {
-            return View();
+            Country? country = Pays.Single(x => x.Name.Contains(pays));
+            return View(country);
         }
 
         // GET: CountryController/Create
