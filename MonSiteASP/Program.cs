@@ -1,7 +1,31 @@
+using Microsoft.EntityFrameworkCore;
+using MonSite.Library;
+using MonSite.Library.Interfaces;
+using MonSite.Library.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+#if DEBUG
+string connectionString = builder.Configuration.GetConnectionString("winServeMySql");
+#else
+string connectionString = builder.Configuration.GetConnectionString("winServeMySqlLocal");
+#endif
+
+builder.Services.AddDbContext<EFContext>(options =>
+{
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), options =>
+    {
+        options.EnableRetryOnFailure();
+    });
+});
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddScoped<CountryRepository>();
+builder.Services.AddScoped<CityRepository>();
 
 var app = builder.Build();
 
@@ -12,8 +36,6 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
-
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

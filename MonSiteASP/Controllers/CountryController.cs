@@ -1,100 +1,94 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using MonSite.Library.Datas;
+using MonSite.Library.Repositories;
 using MonSiteASP.Models;
+using MonSiteASP.Models.Forms;
 
-namespace MonSiteASP.Controllers
+namespace MonSiteASP.Controllers;
+
+public class CountryController : Controller
 {
-    public class CountryController : Controller
+    private readonly CountryRepository _countryRepository;
+    private readonly IMapper _mapper;
+
+    public CountryController(CountryRepository countryRepository, IMapper mapper)
     {
-        public List<Country> Pays { get; set; } = new List<Country>()
-        {
-            new ("Belgique", "Bruxelles"),
-            new ("France", "Paris"),
-            new ("Allemagne", "Berlin"),
-            new ("Pays Bas", "Amsterdam"),
-            new ("Russie", "Moscou"),
-            new ("Japon", "Tokyo"),
-            new ("Chine", "Pékin"),
-            new ("Espagne", "Madrid"),
-            new ("Portugal", "Barcelone"),
-            new ("Italie", "Rome"),
-            new ("Angleterre", "Londre"),
-        };
+        _countryRepository = countryRepository;
+        _mapper = mapper;
+    }
 
-    // GET: CountryController
     public ActionResult Index()
-        {
-            return View(Pays);
-        }
+    {
+        return View(_mapper.Map<IEnumerable<CountryModel>>(_countryRepository.GetAllWithCities()));
+    }
 
-        // GET: CountryController/Details/5
-        public ActionResult Details(string pays)
-        {
-            Country? country = Pays.Single(x => x.Name.Contains(pays));
-            return View(country);
-        }
+    public ActionResult Details(int id)
+    {
+        CountryModel? country = _mapper.Map<CountryModel>(_countryRepository.GetByIdWithCities(id));
+        return View(country);
+    }
 
-        // GET: CountryController/Create
-        public ActionResult Create()
+    public ActionResult Create()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public ActionResult Create(CountryForm form)
+    {
+        if (!ModelState.IsValid) return View(form);
+
+        try
+        {
+            var objForm = _mapper.Map<Country>(form);
+            var result = _countryRepository.Insert(objForm);
+            CountryModel country = _mapper.Map<CountryModel>(result);
+            if (country is null) return View();
+            return RedirectToAction(nameof(Index));
+        }
+        catch
         {
             return View();
         }
+    }
 
-        // POST: CountryController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+    public ActionResult Edit(int id)
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public ActionResult Edit(int id, IFormCollection collection)
+    {
+        try
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return RedirectToAction(nameof(Index));
         }
-
-        // GET: CountryController/Edit/5
-        public ActionResult Edit(int id)
+        catch
         {
             return View();
         }
+    }
 
-        // POST: CountryController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+    public ActionResult Delete(int id)
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public ActionResult Delete(int id, IFormCollection collection)
+    {
+        try
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return RedirectToAction(nameof(Index));
         }
-
-        // GET: CountryController/Delete/5
-        public ActionResult Delete(int id)
+        catch
         {
             return View();
-        }
-
-        // POST: CountryController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
     }
 }
